@@ -20,7 +20,7 @@ loadSprite('pipe-top-right', 'hj2GK4n.png')
 loadSprite('pipe-bottom-left', 'c1cYSbt.png')
 loadSprite('pipe-bottom-right', 'nqQ79eI.png')
 
-
+// grid of the world for player and sprites
 scene("game", () => {
     layers(['bg', 'obj', 'ui'], 'obj')
 
@@ -38,10 +38,11 @@ scene("game", () => {
         '      ^   ^           ^   ^     ^          ^ ^ ()      ',
         '============   ====================  ================== ===========    =========='
     ]
+    // sprites added into world with symbols
     const levelCfg = {
         width: 20,
         height: 20,
-        '=': [sprite('block', solid())],
+        '=': [sprite('block'), solid()],
         '$': [sprite('coin')],
         '*': [sprite('surprise-box'), solid(), 'coin-surprise'],
         '%': [sprite('surprise-box'), solid(), 'shroom-surprise'],
@@ -56,13 +57,43 @@ scene("game", () => {
     }
     
     const gameLevel = addLevel(map, levelCfg)
-    
+// adds a score in teh top left corner
+    const scoreLabel = add([
+        text('test'),
+        pos(30, 0),
+        layer('ui'),
+        {
+            value: 'test',
+        }
+    ])
+
+    add([text('level ' + 'test', pos(4, 6))])
+    // adds sprite to world and sets position
     const player = add([
         sprite('mario'), solid(),
         pos(30, 0),
         body(),
         origin('bot')
     ])
+
+    // allows keyboard functions
+
+    const MOVE_SPEED = 120
+    const JUMP_FORCE = 360
+
+    keyDown('left', () => {
+        player.move(-MOVE_SPEED, 0)
+    })
+    
+    keyDown('right', () => {
+        player.move(MOVE_SPEED, 0)
+    })
+    
+    keyPress('space', () => {
+        if (player.grounded()) {
+            player.jump(JUMP_FORCE)
+        }
+    })
 
 })
 
