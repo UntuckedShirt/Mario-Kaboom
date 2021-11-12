@@ -22,7 +22,7 @@ loadSprite('pipe-bottom-right', 'nqQ79eI.png')
 
 
 scene("game", () => {
-    layers('bg', 'obj', 'ui', 'obj')
+    layers(['bg', 'obj', 'ui'], 'obj')
 
     const map = [
         '                                                    ',
@@ -31,20 +31,26 @@ scene("game", () => {
         '                                                    ',
         '                                                    ',
         '                                                    ',
+        '       %  =*=%=                                     ',
         '                                                    ',
         '                                                    ',
-        '                                                    ',
-        '                                                    ',
-        '                                                    ',
+        '                                          -+        ',
+        '                            ^       ^    ()          ',
         
-        '================================  ================== ===========    =========='
+        '============   ====================  ================== ===========    =========='
     ]
     const levelCfg = {
         width: 20,
         height: 20,
-        '=': [sprite('block')]
-}
+        '=': [sprite('block', solid())],
+        '$': [sprite('coin')],
+        '*': [sprite('surprise'), solid(), 'coint-surprise'],
+        '%': [sprite('surprise'), solid(), 'shroom-surprise'],
 
+
+    }
+    
+const gameLevel = addLevel(map, levelCfg)
 
 })
 
