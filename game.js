@@ -68,13 +68,50 @@ scene("game", () => {
     ])
 
     add([text('level ' + 'test', pos(4, 6))])
+    function big() {
+        let timer = 0
+        let isBig = false
+        return {
+            update() {
+                if (isBig) {
+// dt is a kaboom method
+                    timer -= dt()
+                    if (timer <= 0) {
+                        this.smallify()
+                    }
+                }
+            },
+            isBig() {
+                return isBig
+            },
+            smallify() {
+                this.scale = vec2(1)
+                timer = 0
+                isBig = false
+            },
+            biggify() {
+                this.scale = vec2(2)
+                timer = time
+                isBig = true
+            }
+        }
+    }
+
     // adds sprite to world and sets position
     const player = add([
         sprite('mario'), solid(),
         pos(30, 0),
         body(),
+        big(),
         origin('bot')
     ])
+
+    player.on("headbump", (obj) => {
+        if (obj.is('coin-surprise')) {
+            gameLevel.spawn('$', obj.gridPos.sub(0, 1))
+            destroy(obj)
+        }
+    })
 
     // allows keyboard functions
 
