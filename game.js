@@ -80,7 +80,7 @@ scene("game", ({ level, score }) => {
         '!': [sprite('blue-block'), solid(), scale(0.5)],
         '$': [sprite('coin'), 'coin'],
         '*': [sprite('surprise-box'), solid(), 'coin-surprise'],
-        '@': [sprite('blue-surprise'), solid(), scale(0.5), 'coin-suprise'],
+        '@': [sprite('blue-surprise'), solid(), scale(0.5),'coin-surprise'],
         '%': [sprite('surprise-box'), solid(), 'shroom-surprise'],
         '}': [sprite('unboxed'), solid()],
         '(': [sprite('pipe-bottom-left'), solid(0.5)],
