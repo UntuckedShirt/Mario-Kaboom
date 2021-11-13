@@ -30,43 +30,73 @@ loadSprite('pipe-top-right', 'hj2GK4n.png')
 loadSprite('pipe-bottom-left', 'c1cYSbt.png')
 loadSprite('pipe-bottom-right', 'nqQ79eI.png')
 
+loadSprite('blue-block', 'fVscIbn.png')
+loadSprite('blue-brick', '3e5YRQd.png')
+loadSprite('blue-steel', 'gqVoI2b.png')
+loadSprite('blue-evil-shroom', 'SvV4ueD.png')
+loadSprite('blue-surprise', 'RMqCc1G.png')
+
 // grid of the world for player and sprites
-scene("game", ({ score }) => {
+scene("game", ({ level, score }) => {
     layers(['bg', 'obj', 'ui'], 'obj')
 
-    const map = [
+    const maps = [
+        [
         '                                                       ',
         '                                                       ',
         '                                                       ',
         '                                                       ',
         '                                                       ',
         '                                                       ',
-        '       *%  =*=%=                                        ',
+        '       *%  =*=%=                                       ',
         '                                                       ',
         '                                               -+      ',
         '                                                       ',
         '      ^   ^           ^   ^     ^          ^ ^ ()      ',
-        '============   ====================  ================== ===========    =========='
+            '============   ====================  ================== ===========    ==========',
+        ],
+        [
+        '                                                       ',
+        '                                                       ',
+        '                                                       ',
+        '                                                       ',
+        '                                                       ',
+        '                                                       ',
+        'eee       @@@@@@@@@                                    ',
+        'eeee                                                   ',
+        '                                               -+      ',
+        '                                      x    x           ',
+        '      z   zz          z        z    x x z z z x x       ',
+        '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+
+        ]
     ]
+ 
     // sprites added into world with symbols
     const levelCfg = {
         width: 20,
         height: 20,
         '=': [sprite('block'), solid()],
+        '!': [sprite('blue-block'), solid(), scale(0.5)],
         '$': [sprite('coin'), 'coin'],
         '*': [sprite('surprise-box'), solid(), 'coin-surprise'],
+        '@': [sprite('blue-surprise'), solid(), scale(0.5), 'coin-suprise'],
         '%': [sprite('surprise-box'), solid(), 'shroom-surprise'],
         '}': [sprite('unboxed'), solid()],
         '(': [sprite('pipe-bottom-left'), solid(0.5)],
-        ')': [sprite('pipe-bottom-right'), solid(0.5)],
-        '-': [sprite('pipe-top-left'), solid(0.5)],
+        ')': [sprite('pipe-bottom-right'), solid(0.5), 'pipe'],
+        '-': [sprite('pipe-top-left'), solid(0.5), 'pipe'],
         '+': [sprite('pipe-top-right'), solid(0.5)],
         '^': [sprite('evil-shroom'), solid(), 'dangerous'],
+        'z': [sprite('blue-evil-shroom'), solid(), scale(0.5), 'dangerous'],
         '#': [sprite('shroom'), solid(), 'shroom', body()],
+        'e': [sprite('blue-brick'), solid(), scale(0.5)],
+        'x': [sprite('blue-steel'), solid(), scale(0.5)],
+        
 
     }
     
-    const gameLevel = addLevel(map, levelCfg)
+    const gameLevel = addLevel(maps[level], levelCfg)
 // adds a score in teh top left corner
     const scoreLabel = add([
         text(score),
@@ -77,7 +107,8 @@ scene("game", ({ score }) => {
         }
     ])
 
-    add([text('level ' + 'test', pos(4, 6))])
+    add([text('level ' + parseInt(level +1)), pos(40, 6)])
+
     function big() {
         let timer = 0
         let isBig = false
@@ -167,6 +198,15 @@ const ENEMY_SPEED = 20
         }
     })
 
+    player.collides('pipe', () => {
+        keyPress('down', () => {
+            go('game', {
+                level: (level +1) % maps.length,
+                score: scoreLabel.value
+            })
+        })
+    })
+
 
     keyDown('left', () => {
         player.move(-MOVE_SPEED, 0)
@@ -196,4 +236,4 @@ scene('lose', ({ score }) => {
 })
 
 
-start("game", { score: 0 })
+start("game", { level: 0, score: 0 })
