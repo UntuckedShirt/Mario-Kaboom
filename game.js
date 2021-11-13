@@ -160,6 +160,13 @@ const ENEMY_SPEED = 20
         }
     })
 
+    player.action(() => {
+        camPos(player.pos)
+        if (player.pos.y >= FALL_DEATH) {
+            go('lose', { score: scoreLabel.value})
+        }
+    })
+
 
     keyDown('left', () => {
         player.move(-MOVE_SPEED, 0)
