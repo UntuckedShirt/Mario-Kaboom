@@ -31,7 +31,7 @@ scene("game", () => {
         '                                                       ',
         '                                                       ',
         '                                                       ',
-        '       %  =*=%=                                        ',
+        '       *%  =*=%=                                        ',
         '                                                       ',
         '                                               -+      ',
         '                                                       ',
@@ -52,7 +52,7 @@ scene("game", () => {
         '-': [sprite('pipe-top-left'), solid(0.5)],
         '+': [sprite('pipe-top-right'), solid(0.5)],
         '^': [sprite('evil-goomba'), solid()],
-        '#': [sprite('shroom'), solid()],
+        '#': [sprite('shroom'), solid(), 'shroom', body()],
 
     }
     
@@ -74,6 +74,7 @@ scene("game", () => {
         return {
             update() {
                 if (isBig) {
+                    CURRENT_JUMP_FORCE = BIG_JUMP_FORCE
 // dt is a kaboom method
                     timer -= dt()
                     if (timer <= 0) {
@@ -86,6 +87,7 @@ scene("game", () => {
             },
             smallify() {
                 this.scale = vec2(1)
+                CURRENT_JUMP_FORCE = JUMP_FORCE
                 timer = 0
                 isBig = false
             },
@@ -105,18 +107,46 @@ scene("game", () => {
         big(),
         origin('bot')
     ])
+//controls mushroom speed
+    action('shroom', (m) => {
+        m.move(50, 0)
+    })
 
     player.on("headbump", (obj) => {
         if (obj.is('coin-surprise')) {
             gameLevel.spawn('$', obj.gridPos.sub(0, 1))
             destroy(obj)
+            gameLevel.spawn('}', obj.gridPos.sub(0, 0))
         }
+        if (obj.is('shroom-surprise')) {
+            gameLevel.spawn('#', obj.gridPos.sub(0, 1))
+            destroy(obj)
+            gameLevel.spawn('}', obj.gridPos.sub(0, 0))
+        }
+        if (obj.is('block')) {
+            gameLevel.spawn('', obj.gridPos.sub(0, 1))
+            destroy(obj)
+            gameLevel.spawn('', obj.gridPos.sub(0, 0))
+        }
+    })
+
+    player.collides('shroom', (m) => {
+        destroy(m)
+        player.biggify(6)
+    })
+
+    player.collides('coin', (c) => {
+        destroy(c)
+        scoreLabel.value++
+        scoreLabel.text = scoreLabel.value
     })
 
     // allows keyboard functions
 
     const MOVE_SPEED = 120
     const JUMP_FORCE = 360
+    let CURRENT_JUMP_FORCE = JUMP_FORCE
+    const BIG_JUMP_FORCE = 550
 
     keyDown('left', () => {
         player.move(-MOVE_SPEED, 0)
@@ -128,7 +158,7 @@ scene("game", () => {
     
     keyPress('space', () => {
         if (player.grounded()) {
-            player.jump(JUMP_FORCE)
+            player.jump(CURRENT_JUMP_FORCE)
         }
     })
 
